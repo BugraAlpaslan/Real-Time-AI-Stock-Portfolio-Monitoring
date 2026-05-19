@@ -149,10 +149,7 @@
               "pm.test('status is 201', function () {",
               "  pm.expect(pm.response.code).to.eql(201);",
               "});",
-              "pm.test('realized_pnl increased after sell', function () {",
-              "  const body = pm.response.json();",
-              "  pm.expect(body).to.have.property('realized_pnl');",
-              "});"
+              "// realized_pnl is on summary/position, not TradeOut"
             ],
             "type": "text/javascript"
           }

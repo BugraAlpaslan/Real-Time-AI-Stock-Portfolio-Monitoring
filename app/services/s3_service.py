@@ -23,7 +23,19 @@ class S3Service:
         }
         if endpoint_url:
             client_kwargs["endpoint_url"] = endpoint_url
+        self._endpoint_url = endpoint_url
         self.client = boto3.client("s3", **client_kwargs)
+
+    def _ensure_bucket(self) -> None:
+        if not self._endpoint_url:
+            return
+        try:
+            self.client.head_bucket(Bucket=self.bucket)
+        except ClientError as exc:
+            code = exc.response.get("Error", {}).get("Code", "")
+            if code not in ("404", "NoSuchBucket", "403"):
+                raise
+            self.client.create_bucket(Bucket=self.bucket)
 
     def put_object(
         self,
@@ -32,6 +44,7 @@ class S3Service:
         content_type: str = "application/json",
     ) -> str:
         payload = body.encode("utf-8") if isinstance(body, str) else body
+        self._ensure_bucket()
         self.client.put_object(
             Bucket=self.bucket,
             Key=key,
