@@ -97,9 +97,19 @@ jobs:
       - name: Compose up
         run: |
           docker compose up -d
-          chmod +x scripts/wait-for.sh scripts/wait-for-s3.sh scripts/smoke-test.sh
+          chmod +x scripts/wait-for.sh scripts/smoke-test.sh
           ./scripts/wait-for.sh http://localhost:8000/health 120
-          ./scripts/wait-for-s3.sh portfolio-exports 120
+      - name: Bootstrap & verify S3 buckets (LocalStack)
+        run: |
+          for i in $(seq 1 60); do
+            docker compose exec -T localstack awslocal s3 ls >/dev/null 2>&1 && break
+            sleep 1
+          done
+          docker compose exec -T localstack awslocal s3 mb s3://portfolio-exports || true
+          docker compose exec -T localstack awslocal s3 mb s3://portfolio-analysis || true
+          docker compose exec -T localstack awslocal s3api head-bucket --bucket portfolio-exports
+          docker compose exec -T localstack awslocal s3api head-bucket --bucket portfolio-analysis
+          echo "ready: s3://portfolio-exports, s3://portfolio-analysis"
       - name: Smoke test
         run: ./scripts/smoke-test.sh
 
@@ -117,9 +127,19 @@ jobs:
       - name: Compose up
         run: |
           docker compose up -d
-          chmod +x scripts/wait-for.sh scripts/wait-for-s3.sh
+          chmod +x scripts/wait-for.sh
           ./scripts/wait-for.sh http://localhost:8000/health 120
-          ./scripts/wait-for-s3.sh portfolio-exports 120
+      - name: Bootstrap & verify S3 buckets (LocalStack)
+        run: |
+          for i in $(seq 1 60); do
+            docker compose exec -T localstack awslocal s3 ls >/dev/null 2>&1 && break
+            sleep 1
+          done
+          docker compose exec -T localstack awslocal s3 mb s3://portfolio-exports || true
+          docker compose exec -T localstack awslocal s3 mb s3://portfolio-analysis || true
+          docker compose exec -T localstack awslocal s3api head-bucket --bucket portfolio-exports
+          docker compose exec -T localstack awslocal s3api head-bucket --bucket portfolio-analysis
+          echo "ready: s3://portfolio-exports, s3://portfolio-analysis"
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

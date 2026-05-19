@@ -1,1 +1,24 @@
-*.sh text eol=lf
+# Force LF line endings for shell scripts (run on Linux runners).
+# Without this, Windows checkouts can commit CRLF and break /usr/bin/env bash.
+*.sh         text eol=lf
+*.bash       text eol=lf
+
+# Other text files
+*.py         text
+*.yml        text
+*.yaml       text
+*.json       text
+*.md         text
+*.toml       text
+Dockerfile   text
+Makefile     text
+
+# Binary
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.gif        binary
+*.ico        binary
+*.gz         binary
+*.zip        binary
+*.tar        binary
