@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: localstack
+  namespace: portfolio
+spec:
+  type: ClusterIP
+  ports:
+    - port: 4566
+      targetPort: 4566
+  selector:
+    app: localstack
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: localstack
+  namespace: portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: localstack
+  template:
+    metadata:
+      labels:
+        app: localstack
+    spec:
+      containers:
+        - name: localstack
+          image: localstack/localstack:3.4
+          ports:
+            - containerPort: 4566
+          env:
+            - name: SERVICES
+              value: s3
+            - name: DEBUG
+              value: "0"

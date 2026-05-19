@@ -1,0 +1,19 @@
+flowchart TB
+    GH[GitHub Actions] --> Lint --> Test --> Docker --> Deploy --> Smoke
+    Smoke --> Newman
+
+    subgraph App [FastAPI]
+      API
+      PnL[PnL Service]
+      S3svc[S3 Service]
+    end
+
+    API --> Postgres[(PostgreSQL / Testcontainers)]
+    S3svc --> LocalStack[(LocalStack S3)]
+
+    K6 --> API
+    Playwright --> UI[Static UI]
+    UI --> API
+
+    API -->|/metrics| Prom[Prometheus]
+    Prom --> Grafana

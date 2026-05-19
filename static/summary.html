@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P&amp;L ozeti — Stock Portfolio Tracker</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>P&amp;L ozeti</h1>
+      <nav>
+        <a href="index.html" data-testid="nav-portfolios">Portfoyler</a>
+      </nav>
+    </header>
+    <main>
+      <p id="summary-error" class="muted"></p>
+      <div class="grid-3" data-testid="pnl-cards">
+        <section class="card" data-testid="realized-pnl">
+          <div class="muted">Gerceklesen P&amp;L</div>
+          <div class="pnl-value">0.00</div>
+        </section>
+        <section class="card" data-testid="unrealized-pnl">
+          <div class="muted">Gerceklesmemis P&amp;L</div>
+          <div class="pnl-value">0.00</div>
+        </section>
+        <section class="card" data-testid="total-pnl">
+          <div class="muted">Toplam P&amp;L</div>
+          <div class="pnl-value">0.00</div>
+        </section>
+      </div>
+      <span id="pnl-check" data-valid="false" hidden></span>
+
+      <section class="card">
+        <h2>Pozisyonlar</h2>
+        <table id="summary-positions" data-testid="summary-positions-table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Adet</th>
+              <th>Ort. maliyet</th>
+              <th>Piyasa</th>
+              <th>Unrealized</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+    <script type="module" src="js/summary.js"></script>
+  </body>
+</html>

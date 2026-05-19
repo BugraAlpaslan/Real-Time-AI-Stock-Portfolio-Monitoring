@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portföy detayı — Stock Portfolio Tracker</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="portfolio-title" data-testid="portfolio-title">Portföy</h1>
+      <nav>
+        <a href="index.html" data-testid="nav-portfolios">Portföyler</a>
+        <a id="summary-link" href="#" data-testid="nav-summary">Özet</a>
+      </nav>
+    </header>
+    <main>
+      <p id="portfolio-meta" class="muted"></p>
+      <div data-testid="error-banner" hidden></div>
+
+      <section class="card">
+        <h2>Pozisyonlar</h2>
+        <table id="positions-table" data-testid="positions-table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Adet</th>
+              <th>Ort. maliyet</th>
+              <th>Gerçekleşen P&amp;L</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>İşlem ekle</h2>
+        <form id="trade-form" data-testid="trade-form">
+          <label for="trade-ticker">Ticker</label>
+          <input id="trade-ticker" data-testid="trade-ticker" required placeholder="AAPL" />
+
+          <label for="trade-type">Tip</label>
+          <select id="trade-type" data-testid="trade-type">
+            <option value="BUY">BUY</option>
+            <option value="SELL">SELL</option>
+          </select>
+
+          <label for="trade-quantity">Adet</label>
+          <input id="trade-quantity" data-testid="trade-quantity" type="number" step="any" min="0" required />
+
+          <label for="trade-price">Fiyat</label>
+          <input id="trade-price" data-testid="trade-price" type="number" step="any" min="0" required />
+
+          <label for="trade-commission">Komisyon</label>
+          <input id="trade-commission" data-testid="trade-commission" type="number" step="any" min="0" value="0" />
+
+          <button type="submit" data-testid="trade-submit">Kaydet</button>
+        </form>
+      </section>
+    </main>
+    <script type="module" src="js/trades.js"></script>
+  </body>
+</html>

@@ -1,0 +1,188 @@
+{
+  "info": {
+    "_postman_id": "stock-portfolio-collection",
+    "name": "Stock Portfolio API",
+    "description": "Sprint 1 API flow — health, portfolio, trades, summary, export",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () {",
+              "  pm.expect(pm.response.code).to.eql(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 Create Portfolio",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"newman-portfolio\",\"currency\":\"USD\"}"
+        },
+        "url": "{{baseUrl}}/portfolios"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 201', function () {",
+              "  pm.expect(pm.response.code).to.eql(201);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.environment.set('portfolio_id', String(body.id));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 Add BUY Trade",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ticker\":\"AAPL\",\"trade_type\":\"BUY\",\"quantity\":10,\"price\":150}"
+        },
+        "url": "{{baseUrl}}/portfolios/{{portfolio_id}}/trades"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 201', function () {",
+              "  pm.expect(pm.response.code).to.eql(201);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.environment.set('trade_id', String(body.id));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 List Trades",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/portfolios/{{portfolio_id}}/trades"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () {",
+              "  pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "pm.test('at least one trade', function () {",
+              "  const trades = pm.response.json();",
+              "  pm.expect(trades.length).to.be.at.least(1);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 Get Summary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/portfolios/{{portfolio_id}}/summary"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () {",
+              "  pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "pm.test('total_pnl exists', function () {",
+              "  pm.expect(pm.response.json()).to.have.property('total_pnl');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 Add SELL Trade",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ticker\":\"AAPL\",\"trade_type\":\"SELL\",\"quantity\":5,\"price\":160}"
+        },
+        "url": "{{baseUrl}}/portfolios/{{portfolio_id}}/trades"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 201', function () {",
+              "  pm.expect(pm.response.code).to.eql(201);",
+              "});",
+              "pm.test('realized_pnl increased after sell', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property('realized_pnl');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7 Export to S3",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/portfolios/{{portfolio_id}}/export"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () {",
+              "  pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "pm.test('s3_uri present', function () {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.s3_uri).to.match(/^s3:\\/\\//);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

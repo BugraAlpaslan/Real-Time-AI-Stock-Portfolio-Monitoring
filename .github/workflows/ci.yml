@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install ruff
+      - run: ruff check app tests
+      - run: ruff format --check app tests
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: portfolio
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/portfolio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[dev,e2e]"
+      - name: Pytest with coverage
+        run: pytest --cov=app --cov-report=xml --cov-report=term --cov-fail-under=70
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: coverage
+          path: coverage.xml
+      - name: Start API for E2E
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          chmod +x scripts/wait-for.sh
+          ./scripts/wait-for.sh http://localhost:8000/health 60
+      - name: Playwright E2E
+        env:
+          E2E_BASE_URL: http://localhost:8000
+        run: |
+          playwright install --with-deps chromium
+          pytest tests/e2e -v --strict-markers
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: portfolio:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Save image
+        run: docker save portfolio:ci | gzip > portfolio.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image
+          path: portfolio.tar.gz
+
+  deploy-smoke:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: image
+      - run: |
+          docker load -i portfolio.tar.gz
+          docker tag portfolio:ci portfolio:dev
+      - name: Compose up
+        run: |
+          docker compose up -d
+          chmod +x scripts/wait-for.sh scripts/smoke-test.sh
+          ./scripts/wait-for.sh http://localhost:8000/health 120
+      - name: Smoke test
+        run: ./scripts/smoke-test.sh
+
+  newman:
+    needs: deploy-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: image
+      - run: |
+          docker load -i portfolio.tar.gz
+          docker tag portfolio:ci portfolio:dev
+      - name: Compose up
+        run: |
+          docker compose up -d
+          chmod +x scripts/wait-for.sh
+          ./scripts/wait-for.sh http://localhost:8000/health 120
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install -g newman newman-reporter-htmlextra
+      - name: Newman API contract tests
+        run: |
+          newman run postman/stock-portfolio.postman_collection.json \
+            -e postman/stock-portfolio.postman_environment.json \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export newman-report.html
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: newman-report
+          path: newman-report.html

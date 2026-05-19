@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portföyler — Stock Portfolio Tracker</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Stock Portfolio Tracker</h1>
+      <nav>
+        <a href="index.html" data-testid="nav-portfolios">Portföyler</a>
+      </nav>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Yeni portföy</h2>
+        <form id="create-portfolio-form" data-testid="create-portfolio-form">
+          <label for="portfolio-name">Ad</label>
+          <input
+            id="portfolio-name"
+            name="name"
+            type="text"
+            required
+            data-testid="portfolio-name-input"
+            placeholder="E2E Test"
+          />
+          <label for="portfolio-currency">Para birimi</label>
+          <select id="portfolio-currency" name="currency" data-testid="portfolio-currency-select">
+            <option value="USD">USD</option>
+            <option value="TRY">TRY</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <button type="submit" data-testid="create-portfolio-submit">Oluştur</button>
+        </form>
+      </section>
+      <section class="card">
+        <h2>Portföylerim</h2>
+        <ul id="portfolio-list" data-testid="portfolio-list"></ul>
+      </section>
+    </main>
+    <div data-testid="success-toast" hidden>Portföy oluşturuldu</div>
+    <script type="module" src="js/portfolios.js"></script>
+  </body>
+</html>
