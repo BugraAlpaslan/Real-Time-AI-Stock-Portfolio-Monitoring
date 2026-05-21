@@ -50,5 +50,8 @@ export default function (data) {
 }
 
 export function handleSummary(data) {
-  return { "docs/perf-report.json": JSON.stringify(data, null, 2) };
+  return {
+    "/docs/perf-report.json": JSON.stringify(data, null, 2),
+    stdout: JSON.stringify(data, null, 2),
+  };
 }
