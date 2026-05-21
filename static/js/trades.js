@@ -1,5 +1,8 @@
 import { api } from "./api.js";
 import { fetchPortfolio } from "./portfolios.js";
+import { requireAuth, initHeader } from "./auth.js";
+
+requireAuth();
 
 function getPortfolioId() {
   return new URLSearchParams(window.location.search).get("id");
@@ -55,6 +58,8 @@ async function loadPortfolioDetail() {
   renderPositions(portfolio.positions);
   const summaryLink = document.getElementById("summary-link");
   if (summaryLink) summaryLink.href = `summary.html?id=${id}`;
+  const historyLink = document.getElementById("history-link");
+  if (historyLink) historyLink.href = `history.html?id=${id}`;
 }
 
 async function submitTrade(e) {
@@ -81,8 +86,31 @@ async function submitTrade(e) {
   }
 }
 
+async function handleExport() {
+  const id = getPortfolioId();
+  const resultEl = document.getElementById("export-result");
+  const btn = document.getElementById("export-btn");
+  if (!id || !resultEl) return;
+  try {
+    btn.disabled = true;
+    btn.textContent = "Aktarılıyor…";
+    const res = await api("POST", `/portfolios/${id}/export`);
+    resultEl.textContent = `✓ Aktarıldı: ${res.s3_uri} (${res.trade_count} işlem, ${res.size_bytes} bayt)`;
+    resultEl.style.color = "var(--success)";
+  } catch (err) {
+    resultEl.textContent = `Hata: ${err.message}`;
+    resultEl.style.color = "var(--error)";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "S3'e Aktar";
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  initHeader();
   const form = document.getElementById("trade-form");
   if (form) form.addEventListener("submit", submitTrade);
+  const exportBtn = document.getElementById("export-btn");
+  if (exportBtn) exportBtn.addEventListener("click", handleExport);
   loadPortfolioDetail().catch((err) => showError(err.message));
 });

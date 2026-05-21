@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portföy detayı — Stock Portfolio Tracker</title>
+    <title>Portföy Detayı — Stock Portfolio Tracker</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
@@ -12,7 +12,12 @@
       <nav>
         <a href="index.html" data-testid="nav-portfolios">Portföyler</a>
         <a id="summary-link" href="#" data-testid="nav-summary">Özet</a>
+        <a id="history-link" href="#" data-testid="nav-history">Geçmiş</a>
       </nav>
+      <div class="header-user">
+        <span class="user-badge" id="user-badge"></span>
+        <button id="logout-btn" data-testid="logout-btn">Çıkış</button>
+      </div>
     </header>
     <main>
       <p id="portfolio-meta" class="muted"></p>
@@ -23,9 +28,9 @@
         <table id="positions-table" data-testid="positions-table">
           <thead>
             <tr>
-              <th>Ticker</th>
+              <th>Hisse</th>
               <th>Adet</th>
-              <th>Ort. maliyet</th>
+              <th>Ort. Maliyet</th>
               <th>Gerçekleşen P&amp;L</th>
             </tr>
           </thead>
@@ -34,15 +39,15 @@
       </section>
 
       <section class="card">
-        <h2>İşlem ekle</h2>
+        <h2>İşlem Ekle</h2>
         <form id="trade-form" data-testid="trade-form">
-          <label for="trade-ticker">Ticker</label>
+          <label for="trade-ticker">Hisse Sembolü</label>
           <input id="trade-ticker" data-testid="trade-ticker" required placeholder="AAPL" />
 
-          <label for="trade-type">Tip</label>
+          <label for="trade-type">İşlem Tipi</label>
           <select id="trade-type" data-testid="trade-type">
-            <option value="BUY">BUY</option>
-            <option value="SELL">SELL</option>
+            <option value="BUY">AL (BUY)</option>
+            <option value="SELL">SAT (SELL)</option>
           </select>
 
           <label for="trade-quantity">Adet</label>
@@ -51,11 +56,18 @@
           <label for="trade-price">Fiyat</label>
           <input id="trade-price" data-testid="trade-price" type="number" step="any" min="0" required />
 
-          <label for="trade-commission">Komisyon</label>
-          <input id="trade-commission" data-testid="trade-commission" type="number" step="any" min="0" value="0" />
+          <label for="trade-commission" class="hidden-field">Komisyon</label>
+          <input id="trade-commission" data-testid="trade-commission" type="number" step="any" min="0" value="0" class="hidden-field" />
 
           <button type="submit" data-testid="trade-submit">Kaydet</button>
         </form>
+      </section>
+
+      <section class="card">
+        <h2>Dışa Aktar</h2>
+        <p class="muted" style="margin-bottom:0.75rem">Portföy işlemlerini S3'e JSON olarak aktarır.</p>
+        <button id="export-btn" data-testid="export-btn">S3'e Aktar</button>
+        <p id="export-result" class="muted" style="margin-top:0.75rem"></p>
       </section>
     </main>
     <script type="module" src="js/trades.js"></script>

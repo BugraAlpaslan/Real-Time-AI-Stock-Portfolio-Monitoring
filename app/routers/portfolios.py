@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.schemas import PortfolioCreate, PortfolioOut, PortfolioWithPositions, SummaryOut
 from app.services import portfolio_service
+from app.services.price_service import get_price
 
 router = APIRouter()
 
@@ -29,7 +30,7 @@ def get_portfolio(portfolio_id: int, db: Session = Depends(get_db)) -> Portfolio
 @router.get("/{portfolio_id}/summary", response_model=SummaryOut)
 def get_summary(portfolio_id: int, db: Session = Depends(get_db)) -> SummaryOut:
     try:
-        return portfolio_service.compute_summary(db, portfolio_id)
+        return portfolio_service.compute_summary(db, portfolio_id, price_provider=get_price)
     except LookupError as exc:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

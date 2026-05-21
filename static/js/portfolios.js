@@ -1,4 +1,7 @@
 import { api } from "./api.js";
+import { requireAuth, initHeader } from "./auth.js";
+
+requireAuth();
 
 const STORAGE_KEY = "portfolioTrackerEntries";
 
@@ -92,6 +95,7 @@ function bindCreateForm() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initHeader();
   bindCreateForm();
   refreshList();
 });

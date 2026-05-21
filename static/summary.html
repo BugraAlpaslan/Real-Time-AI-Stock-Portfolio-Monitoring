@@ -3,25 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>P&amp;L ozeti — Stock Portfolio Tracker</title>
+    <title>P&amp;L Özeti — Stock Portfolio Tracker</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <header>
-      <h1>P&amp;L ozeti</h1>
+      <h1>P&amp;L Özeti</h1>
       <nav>
-        <a href="index.html" data-testid="nav-portfolios">Portfoyler</a>
+        <a href="index.html" data-testid="nav-portfolios">Portföyler</a>
       </nav>
+      <div class="header-user">
+        <span class="user-badge" id="user-badge"></span>
+        <button id="logout-btn" data-testid="logout-btn">Çıkış</button>
+      </div>
     </header>
     <main>
       <p id="summary-error" class="muted"></p>
       <div class="grid-3" data-testid="pnl-cards">
         <section class="card" data-testid="realized-pnl">
-          <div class="muted">Gerceklesen P&amp;L</div>
+          <div class="muted">Gerçekleşen P&amp;L</div>
           <div class="pnl-value">0.00</div>
         </section>
         <section class="card" data-testid="unrealized-pnl">
-          <div class="muted">Gerceklesmemis P&amp;L</div>
+          <div class="muted">Gerçekleşmemiş P&amp;L</div>
           <div class="pnl-value">0.00</div>
         </section>
         <section class="card" data-testid="total-pnl">
@@ -36,11 +40,11 @@
         <table id="summary-positions" data-testid="summary-positions-table">
           <thead>
             <tr>
-              <th>Ticker</th>
+              <th>Hisse</th>
               <th>Adet</th>
-              <th>Ort. maliyet</th>
-              <th>Piyasa</th>
-              <th>Unrealized</th>
+              <th>Ort. Maliyet</th>
+              <th>Piyasa Fiyatı</th>
+              <th>Gerçekleşmemiş</th>
             </tr>
           </thead>
           <tbody></tbody>

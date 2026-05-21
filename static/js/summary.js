@@ -1,4 +1,7 @@
 import { api } from "./api.js";
+import { requireAuth, initHeader } from "./auth.js";
+
+requireAuth();
 
 function getPortfolioId() {
   return new URLSearchParams(window.location.search).get("id");
@@ -11,7 +14,12 @@ function formatMoney(value) {
 
 function setCard(testId, value) {
   const el = document.querySelector(`[data-testid="${testId}"] .pnl-value`);
-  if (el) el.textContent = formatMoney(value);
+  if (el) {
+    el.textContent = formatMoney(value);
+    const num = parseFloat(value);
+    el.classList.toggle("pnl-positive", num > 0);
+    el.classList.toggle("pnl-negative", num < 0);
+  }
 }
 
 function renderPositions(positions) {
@@ -53,6 +61,7 @@ async function loadSummary() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initHeader();
   loadSummary().catch((err) => {
     document.getElementById("summary-error").textContent = err.message;
   });

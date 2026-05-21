@@ -40,6 +40,10 @@ def require_backend(backend_available: bool) -> None:
 
 @pytest.fixture
 def ui(page, base_url: str, require_backend: None):
+    # Auth guard bypass: set localStorage before any navigation
+    page.context.add_init_script(
+        "localStorage.setItem('spt_auth', JSON.stringify({user:'admin'}))"
+    )
     page.goto(f"{base_url}/ui/")
     return page
 

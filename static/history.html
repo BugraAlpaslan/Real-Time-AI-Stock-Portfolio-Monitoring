@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>İşlem Geçmişi — Stock Portfolio Tracker</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="history-title">İşlem Geçmişi</h1>
+      <nav>
+        <a href="index.html" data-testid="nav-portfolios">Portföyler</a>
+        <a id="portfolio-link" href="#" data-testid="nav-portfolio">Portföy</a>
+        <a id="summary-link" href="#" data-testid="nav-summary">Özet</a>
+      </nav>
+      <div class="header-user">
+        <span class="user-badge" id="user-badge"></span>
+        <button id="logout-btn" data-testid="logout-btn">Çıkış</button>
+      </div>
+    </header>
+    <main>
+      <div class="card" style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap">
+        <div style="flex:1;min-width:180px">
+          <label for="ticker-filter">Hisseye Göre Filtrele</label>
+          <input id="ticker-filter" data-testid="ticker-filter" placeholder="AAPL" style="margin-bottom:0" />
+        </div>
+        <button id="filter-btn" data-testid="filter-btn">Filtrele</button>
+        <button id="clear-btn" data-testid="clear-btn" style="background:var(--surface2);color:var(--text)">Temizle</button>
+      </div>
+
+      <section class="card">
+        <h2>İşlemler</h2>
+        <table id="history-table" data-testid="history-table">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>Hisse</th>
+              <th>Tip</th>
+              <th>Adet</th>
+              <th>Fiyat</th>
+              <th>Komisyon</th>
+              <th>Not</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+    <script type="module" src="js/history.js"></script>
+  </body>
+</html>

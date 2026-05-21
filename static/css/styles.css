@@ -394,6 +394,125 @@ td:first-child {
 /* ── Helpers ─────────────────────────────────────────── */
 
 .muted { color: var(--text-muted); font-size: 0.875rem; }
+.hidden-field { display: none !important; }
+
+/* ── P&L renk kodlaması ──────────────────────────────── */
+
+.pnl-positive { color: var(--success); }
+.pnl-negative { color: var(--error); }
+
+/* ── Header user area ────────────────────────────────── */
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.user-badge {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+#logout-btn {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text-muted);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+
+#logout-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}
+
+/* ── Trade badge ─────────────────────────────────────── */
+
+.trade-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.badge-buy  { background: var(--success-dim); color: var(--success); }
+.badge-sell { background: var(--error-dim);   color: var(--error); }
+
+/* ── Login page ──────────────────────────────────────── */
+
+.login-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.login-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.login-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(130deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.4rem;
+}
+
+.login-subtitle {
+  margin: 0 0 1.5rem;
+}
+
+.login-card form {
+  display: block;
+}
+
+.login-card form label {
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.login-card form input {
+  margin-bottom: 1rem;
+}
+
+.login-card form button {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.login-error {
+  background: var(--error-dim);
+  border: 1px solid var(--error);
+  color: #fca5a5;
+  padding: 0.6rem 0.875rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.login-error[hidden] { display: none; }
 
 /* ── Responsive ──────────────────────────────────────── */
 
@@ -401,7 +520,6 @@ td:first-child {
   main { padding: 1rem; }
   .grid-3 { grid-template-columns: 1fr; }
   #trade-form { grid-template-columns: 1fr; }
-  #trade-form label[for="trade-commission"],
-  #trade-form input#trade-commission,
   #trade-form button[type="submit"] { grid-column: span 1; }
+  .login-card { margin: 1rem; }
 }
