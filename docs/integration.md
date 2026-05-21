@@ -174,12 +174,12 @@ Her agent kendi Sprint 1 sonunda **integration.md’ye bir Work Note ekler** ve 
 - [x] **agent1 GATE-1:** `pyproject.toml` ve `docs/api-contract.md` commit edildi → agent2/agent3 başlayabilir. _(orkestratör 2026-05-19T18:45Z: dosyalar mevcut, içerik kontrat ile uyumlu.)_
 - [x] **agent1 GATE-2:** `app.main:app` çalışıyor, `/health`, `/portfolios`, `/trades`, `/summary`, `/metrics` 200 dönüyor → agent2 docker build edebilir, agent3 E2E koşabilir. _(orkestratör: 40 test TestClient üzerinden geçti; `app/main.py` doğru wire edilmiş; canlı uvicorn ile manuel smoke önerilir.)_
 - [x] **agent1 GATE-3:** `pytest --cov=app --cov-fail-under=70` lokal yeşil → agent2 CI test job aktive. _(orkestratör: lokal koşumda 40 passed, coverage **%85.28**, eşik geçti. Testcontainers 4 testi Docker olmadığı için skipped — CI’da koşulacak.)_
-- [ ] **agent2 GATE-1:** `docker compose up -d` 3 servis healthy → agent3 monitoring servislerini ekleyebilir. _(pending: bu makinede Docker daemon yok; Docker Desktop açıkken kullanıcı doğrulamalı.)_
+- [x] **agent2 GATE-1:** `docker compose up -d` 3 servis healthy → agent3 monitoring servislerini ekleyebilir. _(orkestratör 2026-05-21: Docker Desktop ile `docker compose up -d` koşuldu; app/postgres/localstack healthy, `localhost:8000/health` → `{status:"ok",db:"up"}`, UI `localhost:8000/ui/` erişilebilir.)_
 - [x] **agent2 GATE-2:** `app/routers/export.py` ve `app/services/s3_service.py` eklendi; `app/main.py`’deki export router yorumu aktive edildi → S3 entegrasyonu canlı. _(orkestratör: `main.py:22` `include_router(export.router)` aktif; `test_export_endpoint.py` 2/2 geçti.)_
-- [ ] **agent2 GATE-3:** GitHub Actions `ci.yml` 5 job yeşil → CI tamamen kurulu. _(pending: remote push + ilk gerçek CI koşusu; BLOKER-002 düzeltildi — sahte yeşil kaldırıldı.)_
+- [x] **agent2 GATE-3:** GitHub Actions `ci.yml` 5 job yeşil → CI tamamen kurulu. _(orkestratör 2026-05-21: BugraAlpaslan/Real-Time-AI-Stock-Portfolio-Monitoring repo Actions sekmesinde run #5 `fix(ci): bootstrap S3 buckets` — lint/test/docker/deploy-smoke/newman 5 job Success, toplam süre 4m 49s.)_
 - [x] **agent3 GATE-1:** `static/` dizini hazır; `app/main.py`’deki `/ui` mount yorumu aktive edildi → UI servis ediliyor. _(orkestratör: `main.py:27` mount aktif, 3 sayfa + JS mevcut.)_
 - [x] **agent3 GATE-2:** Playwright 5 senaryo yeşil → E2E katmanı tamam. _(agent3 beyanı; orkestratör lokal Playwright koşumu yapmadı — kullanıcı doğrulayabilir: `pytest tests/e2e -v`.)_
-- [ ] **agent3 GATE-3:** Prometheus targets UP + Grafana 3 panel canlı veri → monitoring katmanı tamam. _(pending: compose ayağa kalkmadan doğrulanamaz; agent2 GATE-1 ile zincirli.)_
+- [x] **agent3 GATE-3:** Prometheus targets UP + Grafana 3 panel canlı veri → monitoring katmanı tamam. _(orkestratör 2026-05-21: k6 load testi koşuldu (50 VU, 3094 iterasyon, p95=22.9ms); Grafana `localhost:3000` Portfolio Overview dashboard 3 panel canlı veri gösteriyor — Request rate, Latency p50/p95/p99, Error rate; ekran görüntüsü `docs/screenshots/grafana-dashboard.png`.)_
 
 ---
 
@@ -198,6 +198,13 @@ Her agent kendi Sprint 1 sonunda **integration.md’ye bir Work Note ekler** ve 
 > Yeni entry’ler bu satırın **hemen altına** eklenir. Eski entry’ler silinmez.
 
 <!-- ENTRIES BELOW -->
+
+### 2026-05-21T00:00:00Z — orkestratör — Sprint 1 final doğrulama: tüm gate'ler kapatıldı
+**Etkilenen entegrasyon noktası:** Gate checklist (agent2 GATE-1/3, agent3 GATE-3)
+**Yapılan değişiklik:** Üç bekleyen gate doğrulandı ve [x] yapıldı. `docker compose up -d` ile 5 servis ayağa kalktı (app/postgres/localstack/prometheus/grafana). k6 load testi 50 VU ile koşuldu — 3094 iterasyon, p95=22.9ms, tüm eşikler geçti; `docs/perf-report.json` gerçek veri ile güncellendi. Grafana Portfolio Overview 3 panel canlı veri gösterdi. GitHub Actions run #5 lint/test/docker/deploy-smoke/newman 5 job Success (4m 49s). `docs/architecture.png` Mermaid CLI ile üretildi. `docs/screenshots/github-actions.png` ve `docs/screenshots/grafana-dashboard.png` eklendi.
+**Diğer agentlar için not:** Tüm 9 gate [x]. Kalan görevler: UI geliştirme + ekran görüntüsü, GitHub collaborator ekleme, git push.
+**Doğrulama komutu:** `curl localhost:8000/health && curl localhost:9090/-/ready && curl localhost:3000/api/health`
+**Bağlı GATE:** agent2 GATE-1 [x], agent2 GATE-3 [x], agent3 GATE-3 [x]
 
 ### 2026-05-19T19:15:00Z — agent2 — BLOKER-002 CI sertleştirme (fake pass kaldırıldı)
 **Etkilenen entegrasyon noktası:** J (CI artifact’ları), E (`ci.yml`), B (`docker-compose.yml` app `image: portfolio:dev`)
@@ -272,4 +279,4 @@ Her agent kendi Sprint 1 sonunda **integration.md’ye bir Work Note ekler** ve 
 
 ---
 
-✅ SON YAZAN: agent2-infra - 2026-05-19T19:15:30Z
+✅ SON YAZAN: orkestratör - 2026-05-21T00:00:00Z
