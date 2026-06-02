@@ -16,7 +16,6 @@ def test_user_adds_buy_trade_and_position_appears(ui: Page, unique_name: str) ->
     ui.get_by_test_id("trade-type").select_option("BUY")
     ui.get_by_test_id("trade-quantity").fill("10")
     ui.get_by_test_id("trade-price").fill("150")
-    ui.get_by_test_id("trade-commission").fill("0")
     ui.get_by_test_id("trade-submit").click()
 
     row = ui.get_by_test_id("position-row-AAPL")

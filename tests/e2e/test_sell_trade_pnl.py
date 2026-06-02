@@ -20,7 +20,6 @@ def test_sell_after_buy_creates_realized_pnl(ui: Page, unique_name: str) -> None
         ui.get_by_test_id("trade-type").select_option(trade_type)
         ui.get_by_test_id("trade-quantity").fill(qty)
         ui.get_by_test_id("trade-price").fill(price)
-        ui.get_by_test_id("trade-commission").fill("0")
         ui.get_by_test_id("trade-submit").click()
 
     add_trade("BUY", "10", "100")
