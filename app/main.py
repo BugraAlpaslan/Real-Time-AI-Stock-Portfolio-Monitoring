@@ -3,9 +3,18 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
+from starlette.responses import Response
+from starlette.types import Scope
 
 from app.database import init_db
 from app.routers import export, health, portfolios, trades
+
+
+class NoCacheStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-store"
+        return response
 
 
 @asynccontextmanager
@@ -24,4 +33,4 @@ app.include_router(export.router, prefix="/portfolios", tags=["export"])
 Instrumentator().instrument(app).expose(app)  # /metrics — Agent 3 buraya scrape edecek
 
 # Agent 3: static/ hazır — UI mount aktif
-app.mount("/ui", StaticFiles(directory="static", html=True), name="ui")
+app.mount("/ui", NoCacheStaticFiles(directory="static", html=True), name="ui")

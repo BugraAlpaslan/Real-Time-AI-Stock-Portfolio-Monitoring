@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>P&amp;L Özeti — Stock Portfolio Tracker</title>
+    <title>İşlem Geçmişi — Stock Portfolio Tracker</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <header>
-      <h1>P&amp;L Özeti</h1>
+      <h1 id="history-title">İşlem Geçmişi</h1>
       <nav>
         <a href="index.html" data-testid="nav-portfolios" data-page="index">Portföyler</a>
         <a id="portfolio-link" href="#" data-testid="nav-portfolio" data-page="portfolio">Portföy</a>
@@ -21,39 +21,33 @@
       </div>
     </header>
     <main>
-      <p id="summary-error" class="muted"></p>
-      <div class="grid-3" data-testid="pnl-cards">
-        <section class="card" data-testid="realized-pnl">
-          <div class="muted">Gerçekleşen P&amp;L</div>
-          <div class="pnl-value">0.00</div>
-        </section>
-        <section class="card" data-testid="unrealized-pnl">
-          <div class="muted">Gerçekleşmemiş P&amp;L</div>
-          <div class="pnl-value">0.00</div>
-        </section>
-        <section class="card" data-testid="total-pnl">
-          <div class="muted">Toplam P&amp;L</div>
-          <div class="pnl-value">0.00</div>
-        </section>
+      <div class="card" style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap">
+        <div style="flex:1;min-width:180px">
+          <label for="ticker-filter">Hisseye Göre Filtrele</label>
+          <input id="ticker-filter" data-testid="ticker-filter" placeholder="AAPL" style="margin-bottom:0" />
+        </div>
+        <button id="filter-btn" data-testid="filter-btn">Filtrele</button>
+        <button id="clear-btn" data-testid="clear-btn" style="background:var(--surface2);color:var(--text)">Temizle</button>
       </div>
-      <span id="pnl-check" data-valid="false" hidden></span>
 
       <section class="card">
-        <h2>Pozisyonlar</h2>
-        <table id="summary-positions" data-testid="summary-positions-table">
+        <h2>İşlemler</h2>
+        <table id="history-table" data-testid="history-table">
           <thead>
             <tr>
+              <th>Tarih</th>
               <th>Hisse</th>
+              <th>Tip</th>
               <th>Adet</th>
-              <th>Ort. Maliyet</th>
-              <th>Piyasa Fiyatı</th>
-              <th>Gerçekleşmemiş</th>
+              <th>Fiyat</th>
+              <th>Komisyon</th>
+              <th>Not</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </section>
     </main>
-    <script type="module" src="js/summary.js"></script>
+    <script type="module" src="js/history.js"></script>
   </body>
 </html>

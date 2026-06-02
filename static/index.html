@@ -10,27 +10,31 @@
     <header>
       <h1>Stock Portfolio Tracker</h1>
       <nav>
-        <a href="index.html" data-testid="nav-portfolios">Portföyler</a>
+        <a href="index.html" data-testid="nav-portfolios" data-page="index">Portföyler</a>
       </nav>
+      <div class="header-user">
+        <span class="user-badge" id="user-badge"></span>
+        <button id="logout-btn" data-testid="logout-btn">Çıkış</button>
+      </div>
     </header>
     <main>
       <section class="card">
-        <h2>Yeni portföy</h2>
+        <h2>Yeni Portföy</h2>
         <form id="create-portfolio-form" data-testid="create-portfolio-form">
-          <label for="portfolio-name">Ad</label>
+          <label for="portfolio-name">Portföy Adı</label>
           <input
             id="portfolio-name"
             name="name"
             type="text"
             required
             data-testid="portfolio-name-input"
-            placeholder="E2E Test"
+            placeholder="Portföyüm"
           />
-          <label for="portfolio-currency">Para birimi</label>
+          <label for="portfolio-currency">Para Birimi</label>
           <select id="portfolio-currency" name="currency" data-testid="portfolio-currency-select">
-            <option value="USD">USD</option>
-            <option value="TRY">TRY</option>
-            <option value="EUR">EUR</option>
+            <option value="USD">USD — Amerikan Doları</option>
+            <option value="TRY">TRY — Türk Lirası</option>
+            <option value="EUR">EUR — Euro</option>
           </select>
           <button type="submit" data-testid="create-portfolio-submit">Oluştur</button>
         </form>
