@@ -27,7 +27,10 @@ def test_sell_after_buy_creates_realized_pnl(ui: Page, unique_name: str) -> None
     add_trade("SELL", "5", "130")
     expect(ui.get_by_test_id("position-qty-AAPL")).to_have_text("5")
 
-    ui.goto(f"{ui.url.split('/ui/')[0]}/ui/summary.html?id={portfolio_id}")
+    ui.goto(
+        f"{ui.url.split('/ui/')[0]}/ui/summary.html?id={portfolio_id}",
+        wait_until="networkidle",
+    )
     realized = ui.get_by_test_id("realized-pnl").locator(".pnl-value")
     expect(realized).to_be_visible()
     value = float(realized.inner_text())
