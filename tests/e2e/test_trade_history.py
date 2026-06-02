@@ -5,9 +5,7 @@ import pytest
 
 @pytest.mark.e2e
 def test_history_shows_trade_after_buy(page, base_url, require_backend, unique_name):
-    page.context.add_init_script(
-        "localStorage.setItem('spt_auth', JSON.stringify({user:'admin'}))"
-    )
+    page.context.add_init_script("localStorage.setItem('spt_auth', JSON.stringify({user:'admin'}))")
     page.goto(f"{base_url}/ui/")
 
     # Create portfolio
@@ -17,7 +15,7 @@ def test_history_shows_trade_after_buy(page, base_url, require_backend, unique_n
     page.wait_for_selector('[data-testid="success-toast"]', state="visible")
 
     # Navigate to portfolio
-    page.click(f'text={unique_name}')
+    page.click(f"text={unique_name}")
     page.wait_for_selector('[data-testid="trade-form"]')
 
     # Add BUY trade
@@ -43,16 +41,14 @@ def test_history_shows_trade_after_buy(page, base_url, require_backend, unique_n
 
 @pytest.mark.e2e
 def test_history_ticker_filter(page, base_url, require_backend, unique_name):
-    page.context.add_init_script(
-        "localStorage.setItem('spt_auth', JSON.stringify({user:'admin'}))"
-    )
+    page.context.add_init_script("localStorage.setItem('spt_auth', JSON.stringify({user:'admin'}))")
     page.goto(f"{base_url}/ui/")
 
     # Create portfolio
     page.fill('[data-testid="portfolio-name-input"]', unique_name)
     page.click('[data-testid="create-portfolio-submit"]')
     page.wait_for_selector('[data-testid="success-toast"]', state="visible")
-    page.click(f'text={unique_name}')
+    page.click(f"text={unique_name}")
     page.wait_for_selector('[data-testid="trade-form"]')
 
     # Add two trades with different tickers

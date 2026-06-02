@@ -1,4 +1,5 @@
 """Unit tests for S3Service — boto3 calls are patched with MagicMock."""
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch

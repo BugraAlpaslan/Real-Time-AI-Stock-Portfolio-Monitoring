@@ -76,6 +76,7 @@ class TestGetPrice:
 
     def test_cache_hit_skips_api_calls(self):
         import time
+
         ps._cache["TSLA"] = (250.0, time.monotonic())
         with patch.object(ps, "_fetch_midas") as m_midas:
             with patch.object(ps, "_fetch_yahoo") as m_yahoo:
@@ -86,6 +87,7 @@ class TestGetPrice:
 
     def test_expired_cache_refetches(self):
         import time
+
         ps._cache["MSFT"] = (300.0, time.monotonic() - ps.CACHE_TTL - 1)
         with patch.object(ps, "_fetch_midas", return_value=310.0):
             with patch.object(ps, "_fetch_yahoo", return_value=None):
