@@ -26,20 +26,38 @@ function renderPositions(positions) {
   const tbody = document.querySelector("#summary-positions tbody");
   if (!tbody) return;
   tbody.innerHTML = "";
-  const rows = positions || [];
-  for (const p of rows) {
-    if (parseFloat(p.quantity) <= 0) continue;
+  const rows = (positions || []).filter((p) => parseFloat(p.quantity) > 0);
+  if (!rows.length) {
     const tr = document.createElement("tr");
+    tr.innerHTML = '<td colspan="5" class="muted">Açık pozisyon yok</td>';
+    tbody.appendChild(tr);
+    tbody.setAttribute("data-row-count", "0");
+    return;
+  }
+  for (const p of rows) {
+    const tr = document.createElement("tr");
+    tr.setAttribute("data-testid", `summary-row-${p.ticker}`);
     tr.innerHTML = `
       <td>${p.ticker}</td>
       <td>${formatMoney(p.quantity)}</td>
       <td>${formatMoney(p.average_cost)}</td>
       <td>${formatMoney(p.current_price)}</td>
-      <td>${formatMoney(p.unrealized_pnl)}</td>
+      <td class="${parseFloat(p.unrealized_pnl) >= 0 ? "pnl-positive" : "pnl-negative"}">${formatMoney(p.unrealized_pnl)}</td>
     `;
     tbody.appendChild(tr);
   }
   tbody.setAttribute("data-row-count", String(tbody.querySelectorAll("tr").length));
+}
+
+function initLinks() {
+  const id = getPortfolioId();
+  if (!id) return;
+  const portfolioLink = document.getElementById("portfolio-link");
+  const summaryLink = document.getElementById("summary-link");
+  const historyLink = document.getElementById("history-link");
+  if (portfolioLink) portfolioLink.href = `portfolio.html?id=${id}`;
+  if (summaryLink) summaryLink.href = `summary.html?id=${id}`;
+  if (historyLink) historyLink.href = `history.html?id=${id}`;
 }
 
 async function loadSummary() {
@@ -62,6 +80,7 @@ async function loadSummary() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initHeader();
+  initLinks();
   loadSummary().catch((err) => {
     document.getElementById("summary-error").textContent = err.message;
   });
