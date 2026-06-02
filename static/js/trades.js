@@ -56,6 +56,8 @@ async function loadPortfolioDetail() {
   document.getElementById("portfolio-meta").textContent =
     `${portfolio.currency} · ID ${portfolio.id}`;
   renderPositions(portfolio.positions);
+  const portfolioLink = document.getElementById("portfolio-link");
+  if (portfolioLink) portfolioLink.href = `portfolio.html?id=${id}`;
   const summaryLink = document.getElementById("summary-link");
   if (summaryLink) summaryLink.href = `summary.html?id=${id}`;
   const historyLink = document.getElementById("history-link");

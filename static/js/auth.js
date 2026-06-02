@@ -35,4 +35,10 @@ export function initHeader() {
   const user = getCurrentUser();
   if (badge && user) badge.textContent = user;
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
+
+  // Active nav link: match data-page attribute to current page filename
+  const currentPage = window.location.pathname.split("/").pop().replace(".html", "") || "index";
+  document.querySelectorAll(`nav a[data-page="${currentPage}"]`).forEach((a) => {
+    a.classList.add("active");
+  });
 }

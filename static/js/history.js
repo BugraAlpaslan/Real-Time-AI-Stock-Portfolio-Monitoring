@@ -58,8 +58,10 @@ function initLinks() {
   const id = getPortfolioId();
   const portfolioLink = document.getElementById("portfolio-link");
   const summaryLink = document.getElementById("summary-link");
+  const historyLink = document.getElementById("history-link");
   if (portfolioLink) portfolioLink.href = `portfolio.html?id=${id}`;
   if (summaryLink) summaryLink.href = `summary.html?id=${id}`;
+  if (historyLink) historyLink.href = `history.html?id=${id}`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
