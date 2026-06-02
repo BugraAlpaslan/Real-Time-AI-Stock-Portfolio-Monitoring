@@ -8,8 +8,8 @@ FastAPI tabanlı portföy ve işlem takibi: gerçek zamanlı P&L özeti, LocalSt
 
 | İsim | Öğrenci No |
 |------|-----------|
-| Mehmet İhsan Ekinci | 210444064 |
-| Buğra Alpaslan | 210444020 |
+| Mehmet İhsan Ekinci | 1704230054 |
+| Buğra Alpaslan | 170423022 |
 
 <!-- TODO: Demo video linki buraya -->
 
