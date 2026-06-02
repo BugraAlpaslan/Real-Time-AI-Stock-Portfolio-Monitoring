@@ -1,6 +1,5 @@
 import json
 from decimal import Decimal
-from io import BytesIO
 from unittest.mock import MagicMock, patch
 
 import pytest
