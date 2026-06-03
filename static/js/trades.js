@@ -1,4 +1,4 @@
-import { api } from "./api.js";
+import { api, formatCurrency } from "./api.js";
 import { fetchPortfolio } from "./portfolios.js";
 import { requireAuth, initHeader } from "./auth.js";
 
@@ -20,25 +20,35 @@ function hideError() {
   if (banner) banner.hidden = true;
 }
 
-function renderPositions(positions) {
+function renderPositions(positions, marketMap) {
   const tbody = document.querySelector("#positions-table tbody");
   if (!tbody) return;
   tbody.innerHTML = "";
   const active = (positions || []).filter((p) => parseFloat(p.quantity) > 0);
   if (!active.length) {
     const tr = document.createElement("tr");
-    tr.innerHTML = '<td colspan="4" class="muted">Pozisyon yok</td>';
+    tr.innerHTML = '<td colspan="6" class="muted">Pozisyon yok</td>';
     tbody.appendChild(tr);
     return;
   }
   for (const p of active) {
+    const market = (marketMap || {})[p.ticker] || {};
+    const hasMarket = market.current_price != null;
+    const unrealizedClass =
+      hasMarket
+        ? parseFloat(market.unrealized_pnl) >= 0
+          ? "pnl-positive"
+          : "pnl-negative"
+        : "";
     const tr = document.createElement("tr");
     tr.setAttribute("data-testid", `position-row-${p.ticker}`);
     tr.innerHTML = `
       <td>${p.ticker}</td>
       <td data-testid="position-qty-${p.ticker}">${parseFloat(p.quantity)}</td>
-      <td data-testid="position-avg-${p.ticker}">${parseFloat(p.average_cost)}</td>
-      <td>${parseFloat(p.realized_pnl || 0).toFixed(2)}</td>
+      <td data-testid="position-avg-${p.ticker}">${formatCurrency(p.average_cost)}</td>
+      <td>${formatCurrency(p.realized_pnl || 0)}</td>
+      <td>${hasMarket ? formatCurrency(market.current_price) : "—"}</td>
+      <td class="${unrealizedClass}">${hasMarket ? formatCurrency(market.unrealized_pnl) : "—"}</td>
     `;
     tbody.appendChild(tr);
   }
@@ -51,11 +61,22 @@ async function loadPortfolioDetail() {
     return;
   }
   hideError();
-  const portfolio = await fetchPortfolio(id);
+  const [portfolio, summary] = await Promise.all([
+    fetchPortfolio(id),
+    api("GET", `/portfolios/${id}/summary`).catch(() => null),
+  ]);
   document.getElementById("portfolio-title").textContent = portfolio.name;
   document.getElementById("portfolio-meta").textContent =
     `${portfolio.currency} · ID ${portfolio.id}`;
-  renderPositions(portfolio.positions);
+
+  const marketMap = {};
+  if (summary) {
+    for (const p of summary.positions || []) {
+      marketMap[p.ticker] = p;
+    }
+  }
+  renderPositions(portfolio.positions, marketMap);
+
   const portfolioLink = document.getElementById("portfolio-link");
   if (portfolioLink) portfolioLink.href = `portfolio.html?id=${id}`;
   const summaryLink = document.getElementById("summary-link");
@@ -73,6 +94,8 @@ async function submitTrade(e) {
   const quantity = document.getElementById("trade-quantity").value;
   const price = document.getElementById("trade-price").value;
   const commission = document.getElementById("trade-commission").value || "0";
+  const notesEl = document.getElementById("trade-notes");
+  const notes = notesEl ? notesEl.value.trim() || null : null;
   try {
     await api("POST", `/portfolios/${id}/trades`, {
       ticker,
@@ -80,6 +103,7 @@ async function submitTrade(e) {
       quantity,
       price,
       commission,
+      notes,
     });
     document.getElementById("trade-form").reset();
     await loadPortfolioDetail();

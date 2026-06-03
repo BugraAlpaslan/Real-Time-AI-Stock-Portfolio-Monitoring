@@ -21,22 +21,42 @@
       </div>
     </header>
     <main>
+      <div class="card" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;padding:0.9rem 1.4rem;margin-bottom:1rem;">
+        <label for="portfolio-select" style="margin:0;text-transform:none;font-size:0.85rem;color:var(--text-muted);white-space:nowrap;">Portföy:</label>
+        <select id="portfolio-select" style="margin:0;width:auto;flex:1;min-width:180px;max-width:320px;"></select>
+      </div>
+
       <p id="summary-error" class="muted"></p>
       <div class="grid-3" data-testid="pnl-cards">
         <section class="card" data-testid="realized-pnl">
           <div class="muted">Gerçekleşen P&amp;L</div>
-          <div class="pnl-value">0.00</div>
+          <div class="pnl-value">₺0,00</div>
         </section>
         <section class="card" data-testid="unrealized-pnl">
           <div class="muted">Gerçekleşmemiş P&amp;L</div>
-          <div class="pnl-value">0.00</div>
+          <div class="pnl-value">₺0,00</div>
         </section>
         <section class="card" data-testid="total-pnl">
           <div class="muted">Toplam P&amp;L</div>
-          <div class="pnl-value">0.00</div>
+          <div class="pnl-value">₺0,00</div>
         </section>
       </div>
       <span id="pnl-check" data-valid="false" hidden></span>
+
+      <div class="card" style="display:flex;gap:2.5rem;align-items:center;flex-wrap:wrap;">
+        <div>
+          <div class="muted" style="font-size:0.73rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">Toplam Maliyet</div>
+          <div id="total-cost-val" style="font-size:1.1rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:0.25rem;">—</div>
+        </div>
+        <div>
+          <div class="muted" style="font-size:0.73rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">Piyasa Değeri</div>
+          <div id="total-market-val" style="font-size:1.1rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:0.25rem;">—</div>
+        </div>
+        <div>
+          <div class="muted" style="font-size:0.73rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">Getiri</div>
+          <div id="return-pct" class="pnl-value" style="font-size:1.5rem;margin-top:0.25rem;">—</div>
+        </div>
+      </div>
 
       <section class="card">
         <h2>Pozisyonlar</h2>

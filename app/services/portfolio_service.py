@@ -195,3 +195,50 @@ def compute_summary(
 def get_portfolio_with_positions(db: Session, portfolio_id: int) -> PortfolioWithPositions:
     portfolio = get_portfolio(db, portfolio_id)
     return PortfolioWithPositions.model_validate(portfolio)
+
+
+def _rebuild_position(db: Session, portfolio_id: int, ticker: str) -> None:
+    stmt = (
+        select(Trade)
+        .where(Trade.portfolio_id == portfolio_id, Trade.ticker == ticker)
+        .order_by(Trade.executed_at, Trade.id)
+    )
+    trades = list(db.execute(stmt).scalars().all())
+    position = _get_or_create_position(db, portfolio_id, ticker)
+    qty = Decimal("0")
+    avg_cost = Decimal("0")
+    realized_pnl = Decimal("0")
+    for t in trades:
+        t_qty = _to_decimal(t.quantity)
+        t_price = _to_decimal(t.price)
+        t_commission = _to_decimal(t.commission)
+        if t.trade_type == TradeType.BUY:
+            new_qty = qty + t_qty
+            if new_qty > 0:
+                avg_cost = (qty * avg_cost + t_qty * t_price + t_commission) / new_qty
+            qty = new_qty
+        else:
+            realized_pnl += (t_price - avg_cost) * t_qty - t_commission
+            qty -= t_qty
+    position.quantity = qty
+    position.average_cost = avg_cost
+    position.realized_pnl = realized_pnl
+    db.flush()
+
+
+def delete_trade(db: Session, portfolio_id: int, trade_id: int) -> None:
+    get_portfolio(db, portfolio_id)
+    trade = db.get(Trade, trade_id)
+    if trade is None or trade.portfolio_id != portfolio_id:
+        raise LookupError(f"Trade {trade_id} not found in portfolio {portfolio_id}")
+    ticker = trade.ticker
+    db.delete(trade)
+    db.flush()
+    _rebuild_position(db, portfolio_id, ticker)
+    db.commit()
+
+
+def delete_portfolio(db: Session, portfolio_id: int) -> None:
+    portfolio = get_portfolio(db, portfolio_id)
+    db.delete(portfolio)
+    db.commit()

@@ -46,3 +46,18 @@ def list_trades(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(exc),
         ) from exc
+
+
+@router.delete("/{portfolio_id}/trades/{trade_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_trade(
+    portfolio_id: int,
+    trade_id: int,
+    db: Session = Depends(get_db),
+) -> None:
+    try:
+        portfolio_service.delete_trade(db, portfolio_id, trade_id)
+    except LookupError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc

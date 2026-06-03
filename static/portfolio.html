@@ -33,6 +33,8 @@
               <th>Adet</th>
               <th>Ort. Maliyet</th>
               <th>Gerçekleşen P&amp;L</th>
+              <th>Piyasa Fiyatı</th>
+              <th>Gerçekleşmemiş P&amp;L</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -47,8 +49,8 @@
 
           <label for="trade-type">İşlem Tipi</label>
           <select id="trade-type" data-testid="trade-type">
-            <option value="BUY">AL (BUY)</option>
-            <option value="SELL">SAT (SELL)</option>
+            <option value="BUY">AL</option>
+            <option value="SELL">SAT</option>
           </select>
 
           <label for="trade-quantity">Adet</label>
@@ -59,6 +61,9 @@
 
           <label for="trade-commission" class="hidden-field">Komisyon</label>
           <input id="trade-commission" data-testid="trade-commission" type="number" step="any" min="0" value="0" class="hidden-field" />
+
+          <label for="trade-notes" style="grid-column:1/-1">Not (isteğe bağlı)</label>
+          <input id="trade-notes" data-testid="trade-notes" placeholder="Ör: temettü alımı" style="grid-column:1/-1" />
 
           <button type="submit" data-testid="trade-submit">Kaydet</button>
         </form>

@@ -6,6 +6,14 @@ from playwright.sync_api import Page, expect
 pytestmark = pytest.mark.e2e
 
 
+def _parse_money(text: str) -> float:
+    """Parse Turkish currency format (₺1.234,56) or plain float (150.00)."""
+    clean = re.sub(r"[^\d,.\-]", "", text).strip()
+    if "," in clean:
+        clean = clean.replace(".", "").replace(",", ".")
+    return float(clean) if clean and clean not in ("-", ".") else 0.0
+
+
 def test_sell_after_buy_creates_realized_pnl(ui: Page, unique_name: str) -> None:
     ui.get_by_test_id("portfolio-name-input").fill(unique_name)
     ui.get_by_test_id("create-portfolio-submit").click()
@@ -33,5 +41,5 @@ def test_sell_after_buy_creates_realized_pnl(ui: Page, unique_name: str) -> None
     )
     realized = ui.get_by_test_id("realized-pnl").locator(".pnl-value")
     expect(realized).to_be_visible()
-    value = float(realized.inner_text())
-    assert abs(value - 150.0) < 1.0, f"expected realized ~150, got {value}"
+    value = _parse_money(realized.inner_text())
+    assert abs(value - 150.0) < 1.0, f"expected realized ~150, got {realized.inner_text()!r}"
