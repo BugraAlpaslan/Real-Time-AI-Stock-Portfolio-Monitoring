@@ -32,3 +32,9 @@ export async function api(method, path, body) {
   if (r.status === 204) return null;
   return r.json();
 }
+
+export function formatCurrency(value) {
+  const n = parseFloat(value);
+  if (!Number.isFinite(n)) return "₺0,00";
+  return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(n);
+}

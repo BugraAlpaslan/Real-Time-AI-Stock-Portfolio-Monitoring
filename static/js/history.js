@@ -1,4 +1,4 @@
-import { api } from "./api.js";
+import { api, formatCurrency } from "./api.js";
 import { requireAuth, initHeader } from "./auth.js";
 
 requireAuth();
@@ -37,8 +37,8 @@ function renderTrades(trades) {
       <td>${t.ticker}</td>
       <td>${badgeHtml(t.trade_type)}</td>
       <td>${parseFloat(t.quantity)}</td>
-      <td>${parseFloat(t.price).toFixed(2)}</td>
-      <td>${parseFloat(t.commission || 0).toFixed(2)}</td>
+      <td>${formatCurrency(t.price)}</td>
+      <td>${formatCurrency(t.commission || 0)}</td>
       <td>${t.notes || "—"}</td>
     `;
     tbody.appendChild(tr);
