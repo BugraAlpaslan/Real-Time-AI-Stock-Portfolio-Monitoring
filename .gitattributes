@@ -1,19 +1,26 @@
-# Force LF line endings for shell scripts (run on Linux runners).
-# Without this, Windows checkouts can commit CRLF and break /usr/bin/env bash.
+# All text files stored as LF — overrides core.autocrlf on all platforms
+* text=auto eol=lf
+
 *.sh         text eol=lf
 *.bash       text eol=lf
+*.py         text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.json       text eol=lf
+*.md         text eol=lf
+*.toml       text eol=lf
+*.txt        text eol=lf
+*.cfg        text eol=lf
+*.ini        text eol=lf
+*.env        text eol=lf
+*.js         text eol=lf
+*.html       text eol=lf
+*.css        text eol=lf
+*.mmd        text eol=lf
+Dockerfile   text eol=lf
+Makefile     text eol=lf
 
-# Other text files
-*.py         text
-*.yml        text
-*.yaml       text
-*.json       text
-*.md         text
-*.toml       text
-Dockerfile   text
-Makefile     text
-
-# Binary
+# Binary — no conversion
 *.png        binary
 *.jpg        binary
 *.jpeg       binary
