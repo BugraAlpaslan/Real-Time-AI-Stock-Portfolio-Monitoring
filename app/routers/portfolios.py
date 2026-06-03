@@ -37,3 +37,15 @@ def get_summary(portfolio_id: int, db: Session = Depends(get_db)) -> SummaryOut:
             detail=str(exc),
             headers={"X-Error-Code": "NOT_FOUND"},
         ) from exc
+
+
+@router.delete("/{portfolio_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_portfolio(portfolio_id: int, db: Session = Depends(get_db)) -> None:
+    try:
+        portfolio_service.delete_portfolio(db, portfolio_id)
+    except LookupError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+            headers={"X-Error-Code": "NOT_FOUND"},
+        ) from exc

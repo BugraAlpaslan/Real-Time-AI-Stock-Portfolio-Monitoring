@@ -50,11 +50,30 @@ function renderPortfolioList(entries) {
   }
   for (const { id, name } of entries) {
     const li = document.createElement("li");
+    li.style.cssText = "display:flex;align-items:center;gap:0.5rem;";
     const a = document.createElement("a");
     a.href = `portfolio.html?id=${id}`;
     a.textContent = name;
     a.setAttribute("data-testid", `portfolio-link-${id}`);
+    a.style.flex = "1";
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Sil";
+    delBtn.className = "btn-sm btn-danger";
+    delBtn.setAttribute("data-testid", `delete-portfolio-${id}`);
+    delBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!confirm(`"${name}" portföyünü silmek istediğinizden emin misiniz?`)) return;
+      try {
+        await api("DELETE", `/portfolios/${id}`);
+        const stored = loadStoredPortfolios().filter((entry) => entry.id !== id);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+        renderPortfolioList(stored);
+      } catch (err) {
+        alert(err.message);
+      }
+    });
     li.appendChild(a);
+    li.appendChild(delBtn);
     list.appendChild(li);
   }
 }

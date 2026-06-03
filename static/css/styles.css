@@ -440,6 +440,23 @@ td:first-child {
   filter: none;
 }
 
+/* ── Button variants ─────────────────────────────────── */
+
+.btn-danger {
+  background: var(--error);
+  color: #fff;
+}
+.btn-danger:hover {
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+}
+
+.btn-sm {
+  padding: 0.22rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
 /* ── Trade badge ─────────────────────────────────────── */
 
 .trade-badge {

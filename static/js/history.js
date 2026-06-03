@@ -25,7 +25,7 @@ function renderTrades(trades) {
   tbody.innerHTML = "";
   if (!trades.length) {
     const tr = document.createElement("tr");
-    tr.innerHTML = '<td colspan="7" class="muted">İşlem bulunamadı.</td>';
+    tr.innerHTML = '<td colspan="8" class="muted">İşlem bulunamadı.</td>';
     tbody.appendChild(tr);
     return;
   }
@@ -40,9 +40,24 @@ function renderTrades(trades) {
       <td>${formatCurrency(t.price)}</td>
       <td>${formatCurrency(t.commission || 0)}</td>
       <td>${t.notes || "—"}</td>
+      <td><button class="btn-sm btn-danger" data-id="${t.id}" data-testid="delete-trade-${t.id}">Sil</button></td>
     `;
     tbody.appendChild(tr);
   }
+
+  tbody.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-id]");
+    if (!btn) return;
+    const tradeId = btn.dataset.id;
+    if (!confirm("Bu işlemi silmek istediğinizden emin misiniz?")) return;
+    const id = getPortfolioId();
+    try {
+      await api("DELETE", `/portfolios/${id}/trades/${tradeId}`);
+      await load();
+    } catch (err) {
+      alert(`Silinemedi: ${err.message}`);
+    }
+  });
 }
 
 async function load(ticker = null) {
