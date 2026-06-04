@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import math
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
 
 from app.services.signal_service import (
-    SignalResult,
     _score_bollinger,
     _score_macd,
     _score_rsi,

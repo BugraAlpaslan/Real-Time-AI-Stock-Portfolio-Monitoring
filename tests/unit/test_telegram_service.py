@@ -3,7 +3,6 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import httpx
-import pytest
 
 from app.services.signal_service import SignalResult
 from app.services.telegram_service import (
