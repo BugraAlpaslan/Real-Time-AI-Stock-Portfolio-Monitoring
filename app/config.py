@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     gemini_api_key: str | None = None
     midas_base_url: str = "https://www.getmidas.com/wp-json/midas-api/v1"
     env: Literal["dev", "test", "prod"] = "dev"
+    signal_score_threshold: int = 2
+    signal_history_days: int = 90
+    telegram_bot_token: str | None = None
+    telegram_chat_id: str | None = None
 
 
 settings = Settings()

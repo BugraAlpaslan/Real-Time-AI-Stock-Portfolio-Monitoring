@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.models import Portfolio
 from app.schemas.schemas import PortfolioCreate, PortfolioOut, PortfolioWithPositions, SummaryOut
 from app.services import portfolio_service
 from app.services.price_service import get_price
@@ -13,6 +14,13 @@ router = APIRouter()
 def create_portfolio(payload: PortfolioCreate, db: Session = Depends(get_db)) -> PortfolioOut:
     portfolio = portfolio_service.create_portfolio(db, payload)
     return PortfolioOut.model_validate(portfolio)
+
+
+@router.get("", response_model=list[PortfolioOut])
+def list_portfolios(db: Session = Depends(get_db)) -> list[PortfolioOut]:
+    """Tüm portföyleri listeler (en yeni önce). UI bunu kullanarak DB'den senkronize olur."""
+    portfolios = db.query(Portfolio).order_by(Portfolio.created_at.desc()).all()
+    return [PortfolioOut.model_validate(p) for p in portfolios]
 
 
 @router.get("/{portfolio_id}", response_model=PortfolioWithPositions)
