@@ -17,6 +17,10 @@ dependencies = [
     "prometheus-fastapi-instrumentator>=7.0",
     "boto3>=1.34",
     "httpx>=0.27",
+    "pandas>=2.2",
+    "ta>=0.11",
+    "google-genai>=1.0",
+    "yfinance>=0.2",
 ]
 
 [project.optional-dependencies]

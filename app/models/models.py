@@ -2,12 +2,15 @@ import enum
 from datetime import datetime
 
 from sqlalchemy import (
+    Boolean,
     DateTime,
     Enum,
     ForeignKey,
     Index,
+    Integer,
     Numeric,
     String,
+    Text,
     UniqueConstraint,
     func,
 )
@@ -37,6 +40,9 @@ class Portfolio(Base):
         onupdate=func.now(),
         nullable=False,
     )
+
+    telegram_chat_id: Mapped[str | None] = mapped_column(String(64), nullable=True, default=None)
+    telegram_link_token: Mapped[str | None] = mapped_column(String(64), nullable=True, default=None)
 
     positions: Mapped[list["Position"]] = relationship(
         "Position", back_populates="portfolio", cascade="all, delete-orphan"
@@ -79,3 +85,27 @@ class Trade(Base):
     )
 
     portfolio: Mapped["Portfolio"] = relationship("Portfolio", back_populates="trades")
+
+
+class SignalAnalysis(Base):
+    __tablename__ = "signal_analyses"
+    __table_args__ = (Index("ix_signal_analyses_portfolio_ticker", "portfolio_id", "ticker"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    portfolio_id: Mapped[int] = mapped_column(ForeignKey("portfolios.id"), nullable=False)
+    ticker: Mapped[str] = mapped_column(String(32), nullable=False)
+    total_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    rsi_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    macd_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    bollinger_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    stochastic_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    rsi_value: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
+    latest_close: Mapped[float | None] = mapped_column(Numeric(20, 4), nullable=True)
+    triggered: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    gemini_analysis: Mapped[str | None] = mapped_column(Text, nullable=True)
+    telegram_sent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    analyzed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    portfolio: Mapped["Portfolio"] = relationship("Portfolio")

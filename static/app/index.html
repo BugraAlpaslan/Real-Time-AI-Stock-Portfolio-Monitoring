@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RTSM — Portföy & Sinyal</title>
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── Giriş Ekranı ───────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-bg-glow"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="logo-triangle">▲</span>
+      <span>RTSM</span>
+    </div>
+    <p class="login-sub">Portföy Takip & Sinyal Sistemi</p>
+    <form id="login-form">
+      <div class="field-group">
+        <label for="l-user">Kullanıcı Adı</label>
+        <input id="l-user" type="text" placeholder="admin" autocomplete="username" />
+      </div>
+      <div class="field-group">
+        <label for="l-pass">Şifre</label>
+        <input id="l-pass" type="password" placeholder="••••••" autocomplete="current-password" />
+      </div>
+      <div id="login-err" class="msg-error" hidden></div>
+      <button type="submit" class="btn-primary w-full">Giriş Yap</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Uygulama Kabuğu ────────────────────────────────── -->
+<div id="shell" hidden>
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">
+        <span class="logo-triangle">▲</span>
+        <span class="sb-logo-text">RTSM</span>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">PORTFÖYLER</div>
+      <nav id="portfolio-nav" class="sb-nav">
+        <div class="sb-empty">Portföy yok</div>
+      </nav>
+      <button id="btn-new-portfolio" class="btn-ghost-small">+ Yeni Portföy</button>
+    </div>
+
+    <div id="sub-nav-section" class="sb-section" hidden>
+      <div class="sb-label" id="sub-nav-label">—</div>
+      <nav class="sb-nav">
+        <a class="sb-link" data-view="overview">
+          <span class="sb-icon">◈</span> Genel Bakış
+        </a>
+        <a class="sb-link" data-view="signals">
+          <span class="sb-icon">⚡</span> Sinyal Analizi
+        </a>
+        <a class="sb-link" data-view="history">
+          <span class="sb-icon">≡</span> İşlem Geçmişi
+        </a>
+        <a class="sb-link" data-view="connect">
+          <span class="sb-icon">✦</span> Telegram
+        </a>
+      </nav>
+    </div>
+
+    <div class="sb-footer">
+      <span id="sb-user" class="sb-user-name"></span>
+      <button id="btn-logout" class="btn-ghost-small">Çıkış</button>
+    </div>
+  </aside>
+
+  <!-- Ana İçerik -->
+  <main id="main">
+    <div id="view"></div>
+  </main>
+
+</div>
+
+<!-- ── İşlem Modal ────────────────────────────────────── -->
+<div id="trade-modal" class="modal-overlay" hidden>
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h3 class="modal-title">İşlem Ekle</h3>
+      <button id="close-trade-modal" class="btn-icon">✕</button>
+    </div>
+    <form id="trade-form" class="modal-body">
+      <div class="trade-type-toggle">
+        <button type="button" class="toggle-btn active" data-type="BUY">AL</button>
+        <button type="button" class="toggle-btn" data-type="SELL">SAT</button>
+        <input type="hidden" id="t-type" value="BUY" />
+      </div>
+      <div class="fields-row">
+        <div class="field-group">
+          <label for="t-ticker">Hisse Sembolü</label>
+          <input id="t-ticker" type="text" placeholder="AAPL" maxlength="16" />
+        </div>
+        <div class="field-group">
+          <label for="t-qty">Adet</label>
+          <input id="t-qty" type="number" step="any" min="0.0001" placeholder="100" />
+        </div>
+      </div>
+      <div class="fields-row">
+        <div class="field-group">
+          <label for="t-price">Fiyat</label>
+          <input id="t-price" type="number" step="any" min="0" placeholder="0.00" />
+        </div>
+        <div class="field-group">
+          <label for="t-comm">Komisyon</label>
+          <input id="t-comm" type="number" step="any" min="0" placeholder="0" value="0" />
+        </div>
+      </div>
+      <div id="trade-err" class="msg-error" hidden></div>
+      <button type="submit" class="btn-primary w-full">Kaydet</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Yeni Portföy Modal ─────────────────────────────── -->
+<div id="new-portfolio-modal" class="modal-overlay" hidden>
+  <div class="modal-panel modal-sm">
+    <div class="modal-header">
+      <h3 class="modal-title">Yeni Portföy</h3>
+      <button id="close-np-modal" class="btn-icon">✕</button>
+    </div>
+    <form id="np-form" class="modal-body">
+      <div class="field-group">
+        <label for="np-name">Portföy Adı</label>
+        <input id="np-name" type="text" placeholder="Teknoloji Portföyüm" required />
+      </div>
+      <div class="field-group">
+        <label for="np-currency">Para Birimi</label>
+        <select id="np-currency">
+          <option value="USD">USD — Amerikan Doları</option>
+          <option value="TRY">TRY — Türk Lirası</option>
+          <option value="EUR">EUR — Euro</option>
+        </select>
+      </div>
+      <div id="np-err" class="msg-error" hidden></div>
+      <button type="submit" class="btn-primary w-full">Oluştur</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────────────── -->
+<div id="toast-root"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
