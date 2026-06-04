@@ -12,7 +12,9 @@ router = APIRouter()
 @router.get("/{portfolio_id}/signals")
 def get_signals(
     portfolio_id: int,
-    ticker: str = Query(..., min_length=1, max_length=20, description="Hisse kodu (ör. AAPL, THYAO.IS)"),
+    ticker: str = Query(
+        ..., min_length=1, max_length=20, description="Hisse kodu (ör. AAPL, THYAO.IS)"
+    ),
     db: Session = Depends(get_db),
 ):
     """
@@ -114,10 +116,7 @@ def get_signal_history(
     if portfolio is None:
         raise HTTPException(status_code=404, detail="Portfolio not found")
 
-    q = (
-        db.query(SignalAnalysis)
-        .filter(SignalAnalysis.portfolio_id == portfolio_id)
-    )
+    q = db.query(SignalAnalysis).filter(SignalAnalysis.portfolio_id == portfolio_id)
     if ticker:
         q = q.filter(SignalAnalysis.ticker == ticker.upper())
 

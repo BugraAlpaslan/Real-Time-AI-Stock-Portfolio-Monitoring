@@ -27,6 +27,7 @@ class SignalResult:
 
 # ---------- Veri Katmanı ----------
 
+
 def fetch_ohlcv(ticker: str, days: int | None = None) -> pd.DataFrame:
     days = days or settings.signal_history_days
     period = f"{days}d"
@@ -41,6 +42,7 @@ def fetch_ohlcv(ticker: str, days: int | None = None) -> pd.DataFrame:
 
 
 # ---------- İndikatör Hesaplama ----------
+
 
 def _compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
     close = df["close"]
@@ -71,6 +73,7 @@ def _compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------- Puanlama ----------
+
 
 def _score_rsi(df: pd.DataFrame) -> int:
     val = df["rsi"].iloc[-1]
@@ -122,15 +125,24 @@ def _score_stochastic(df: pd.DataFrame) -> int:
     if pd.isna(prev["stoch_k"]) or pd.isna(curr["stoch_k"]):
         return 0
     # %K, %D'yi 20 seviyesinin altında yukarı kesiyor
-    if prev["stoch_k"] <= prev["stoch_d"] and curr["stoch_k"] > curr["stoch_d"] and curr["stoch_k"] < 20:
+    if (
+        prev["stoch_k"] <= prev["stoch_d"]
+        and curr["stoch_k"] > curr["stoch_d"]
+        and curr["stoch_k"] < 20
+    ):
         return 1
     # %K, %D'yi 80 seviyesinin üzerinde aşağı kesiyor
-    if prev["stoch_k"] >= prev["stoch_d"] and curr["stoch_k"] < curr["stoch_d"] and curr["stoch_k"] > 80:
+    if (
+        prev["stoch_k"] >= prev["stoch_d"]
+        and curr["stoch_k"] < curr["stoch_d"]
+        and curr["stoch_k"] > 80
+    ):
         return -1
     return 0
 
 
 # ---------- Ana Fonksiyon ----------
+
 
 def compute_signal_score(ticker: str) -> SignalResult:
     df = fetch_ohlcv(ticker)

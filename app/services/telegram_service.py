@@ -61,10 +61,11 @@ def build_trigger_reasons(result: SignalResult) -> list[str]:
 def _md_to_html(text: str) -> str:
     """Gemini'den gelen **bold** ve *italic* markdown'ı Telegram HTML'ine çevirir."""
     import re
+
     # **bold** → <b>bold</b>
-    text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text, flags=re.DOTALL)
+    text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text, flags=re.DOTALL)
     # *italic* → <i>italic</i>  (sadece tek yıldız kalanlar)
-    text = re.sub(r'\*(.+?)\*', r'<i>\1</i>', text, flags=re.DOTALL)
+    text = re.sub(r"\*(.+?)\*", r"<i>\1</i>", text, flags=re.DOTALL)
     # Telegram HTML'inde & < > kaçırılmalı (Gemini çıktısında nadiren olur ama önlem)
     # Önceden dönüştürülmüş tag'leri korumak için sadece düz metindeki karakterleri kaçır
     return text
@@ -74,7 +75,9 @@ def _build_message(result: SignalResult, gemini_analysis: str, trigger_reasons: 
     direction = "🟢 ALIM" if result.total_score > 0 else "🔴 SATIM"
     close_display = f"{result.latest_close:.2f}" if result.latest_close is not None else "N/A"
     reasons_text = "\n".join(trigger_reasons)
-    analysis_text = _md_to_html(gemini_analysis) if gemini_analysis else "<i>(analiz mevcut değil)</i>"
+    analysis_text = (
+        _md_to_html(gemini_analysis) if gemini_analysis else "<i>(analiz mevcut değil)</i>"
+    )
 
     return (
         f"📊 <b>{result.ticker} — {direction} SİNYALİ</b>\n"

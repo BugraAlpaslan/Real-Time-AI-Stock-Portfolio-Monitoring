@@ -14,9 +14,14 @@ from app.services.telegram_service import (
 
 # ---------- Yardımcı ----------
 
+
 def _make_result(
-    rsi=1, macd=1, bollinger=0, stochastic=0,
-    rsi_value=28.4, latest_close=213.7,
+    rsi=1,
+    macd=1,
+    bollinger=0,
+    stochastic=0,
+    rsi_value=28.4,
+    latest_close=213.7,
     ticker="AAPL",
 ) -> SignalResult:
     total = rsi + macd + bollinger + stochastic
@@ -34,6 +39,7 @@ def _make_result(
 
 
 # ---------- build_trigger_reasons ----------
+
 
 def test_build_trigger_reasons_all_buy():
     result = _make_result(rsi=1, macd=1, bollinger=1, stochastic=1)
@@ -61,10 +67,10 @@ def test_build_trigger_reasons_neutral():
 def test_build_trigger_reasons_mixed():
     result = _make_result(rsi=1, macd=-1, bollinger=0, stochastic=1)
     reasons = build_trigger_reasons(result)
-    assert "🟢" in reasons[0]   # RSI → AL
-    assert "🔴" in reasons[1]   # MACD → SAT
-    assert "⚪" in reasons[2]   # Bollinger → Nötr
-    assert "🟢" in reasons[3]   # Stochastic → AL
+    assert "🟢" in reasons[0]  # RSI → AL
+    assert "🔴" in reasons[1]  # MACD → SAT
+    assert "⚪" in reasons[2]  # Bollinger → Nötr
+    assert "🟢" in reasons[3]  # Stochastic → AL
 
 
 def test_build_trigger_reasons_rsi_value_displayed():
@@ -80,6 +86,7 @@ def test_build_trigger_reasons_rsi_value_none():
 
 
 # ---------- _build_message ----------
+
 
 def test_build_message_buy_direction():
     result = _make_result(rsi=1, macd=1)
@@ -112,6 +119,7 @@ def test_build_message_contains_close_price():
 
 
 # ---------- send_signal_notification ----------
+
 
 def test_send_notification_no_token(monkeypatch):
     monkeypatch.setattr("app.services.telegram_service.settings.telegram_bot_token", None)

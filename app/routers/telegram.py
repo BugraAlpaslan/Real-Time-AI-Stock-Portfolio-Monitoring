@@ -19,7 +19,7 @@ def generate_telegram_link(portfolio_id: int, db: Session = Depends(get_db)):
     if portfolio is None:
         raise HTTPException(status_code=404, detail="Portfolio not found")
 
-    token = uuid.uuid4().hex          # 32 karakterlik rastgele token
+    token = uuid.uuid4().hex  # 32 karakterlik rastgele token
     portfolio.telegram_link_token = token
     db.commit()
 
@@ -32,8 +32,7 @@ def generate_telegram_link(portfolio_id: int, db: Session = Depends(get_db)):
         "telegram_url": deep_link_url,
         "already_linked": portfolio.telegram_chat_id is not None,
         "message": (
-            "Linke tıklayın ve Telegram'da 'Başlat' butonuna basın. "
-            "Bağlantı otomatik tamamlanacak."
+            "Linke tıklayın ve Telegram'da 'Başlat' butonuna basın. Bağlantı otomatik tamamlanacak."
         ),
     }
 

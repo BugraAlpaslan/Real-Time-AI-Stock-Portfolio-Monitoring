@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def _build_prompt(result: SignalResult, position_data: dict | None = None) -> str:
-    rsi_display   = f"{result.rsi_value:.1f}" if result.rsi_value is not None else "N/A"
+    rsi_display = f"{result.rsi_value:.1f}" if result.rsi_value is not None else "N/A"
     close_display = f"{result.latest_close:.2f}" if result.latest_close is not None else "N/A"
 
     rsi_interp = (
@@ -41,9 +41,9 @@ def _build_prompt(result: SignalResult, position_data: dict | None = None) -> st
         else "aşırı bölge dışında, kesişim yok"
     )
 
-    direction   = "ALIM" if result.total_score > 0 else "SATIM" if result.total_score < 0 else "NÖTR"
-    confluence  = abs(result.total_score)
-    signal_str  = f"{confluence}/4 indikatör {direction} yönünde hizalanmış"
+    direction = "ALIM" if result.total_score > 0 else "SATIM" if result.total_score < 0 else "NÖTR"
+    confluence = abs(result.total_score)
+    signal_str = f"{confluence}/4 indikatör {direction} yönünde hizalanmış"
 
     # Pozisyon bölümü
     position_section = ""
@@ -81,8 +81,7 @@ def _build_prompt(result: SignalResult, position_data: dict | None = None) -> st
 
 
 _GEMINI_URL = (
-    "https://generativelanguage.googleapis.com/v1beta/models/"
-    "gemini-flash-latest:generateContent"
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
 )
 
 

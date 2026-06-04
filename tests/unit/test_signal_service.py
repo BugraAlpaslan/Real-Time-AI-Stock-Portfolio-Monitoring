@@ -17,6 +17,7 @@ from app.services.signal_service import (
 
 # ---------- Yardımcılar ----------
 
+
 def _make_df(**cols) -> pd.DataFrame:
     """Verilen sütunlarla minimal bir DataFrame oluşturur."""
     length = max(len(v) for v in cols.values())
@@ -25,6 +26,7 @@ def _make_df(**cols) -> pd.DataFrame:
 
 
 # ---------- fetch_ohlcv ----------
+
 
 def test_fetch_ohlcv_empty_raises():
     with patch("app.services.signal_service.yf.download", return_value=pd.DataFrame()):
@@ -43,14 +45,15 @@ def test_fetch_ohlcv_returns_lowercase_columns():
 
 # ---------- _score_rsi ----------
 
+
 @pytest.mark.parametrize(
     "rsi_val, expected",
     [
-        (28.0, 1),    # aşırı satım → AL
-        (33.0, 1),    # eşik dahil → AL
-        (50.0, 0),    # nötr
-        (67.0, -1),   # eşik dahil → SAT
-        (71.2, -1),   # aşırı alım → SAT
+        (28.0, 1),  # aşırı satım → AL
+        (33.0, 1),  # eşik dahil → AL
+        (50.0, 0),  # nötr
+        (67.0, -1),  # eşik dahil → SAT
+        (71.2, -1),  # aşırı alım → SAT
         (float("nan"), 0),  # eksik veri → nötr
     ],
 )
@@ -60,6 +63,7 @@ def test_score_rsi(rsi_val, expected):
 
 
 # ---------- _score_macd ----------
+
 
 def test_score_macd_bullish_crossover():
     # önceki: macd < sinyal  →  şimdiki: macd > sinyal  ⟹ +1
@@ -91,6 +95,7 @@ def test_score_macd_nan_returns_zero():
 
 # ---------- _score_bollinger ----------
 
+
 def test_score_bollinger_lower_touch():
     # close ≈ bb_lower  ⟹ +1
     df = _make_df(close=[100.0], bb_lower=[100.2], bb_upper=[110.0])
@@ -114,6 +119,7 @@ def test_score_bollinger_nan():
 
 
 # ---------- _score_stochastic ----------
+
 
 def test_score_stochastic_bullish_crossover():
     # k önceki ≤ d, şimdiki k > d, şimdiki k < 20  ⟹ +1
@@ -139,6 +145,7 @@ def test_score_stochastic_insufficient_data():
 
 # ---------- compute_signal_score ----------
 
+
 def _build_mock_df():
     """
     _compute_indicators mock'u bu df'i döndürür; compute_signal_score
@@ -146,14 +153,16 @@ def _build_mock_df():
     """
     n = 30
     closes = [100.0 + i * 0.1 for i in range(n)]
-    df = pd.DataFrame({
-        "open": closes,
-        "high": [c + 1 for c in closes],
-        "low": [c - 1 for c in closes],
-        "close": closes,
-        "volume": [1_000_000] * n,
-        "rsi": [28.0] * n,
-    })
+    df = pd.DataFrame(
+        {
+            "open": closes,
+            "high": [c + 1 for c in closes],
+            "low": [c - 1 for c in closes],
+            "close": closes,
+            "volume": [1_000_000] * n,
+            "rsi": [28.0] * n,
+        }
+    )
     return df
 
 

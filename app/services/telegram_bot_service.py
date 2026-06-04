@@ -4,6 +4,7 @@ Telegram Bot Polling Servisi
 Webhook gerektirmez; FastAPI lifespan'inde arka planda çalışır.
 Bot'a gelen her /start {token} mesajını yakalar ve portfolio'yu bağlar.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 _TELEGRAM_API = "https://api.telegram.org/bot{token}/{method}"
 _POLL_INTERVAL = 2  # saniye
-_TIMEOUT = 30       # long-polling timeout (Telegram sunucu tarafında bekler)
+_TIMEOUT = 30  # long-polling timeout (Telegram sunucu tarafında bekler)
 
 _running = False
 
@@ -63,26 +64,26 @@ async def _handle_start(chat_id: int, token: str) -> None:
     async with httpx.AsyncClient() as client:
         db = SessionLocal()
         try:
-            portfolio = db.query(Portfolio).filter(
-                Portfolio.telegram_link_token == token
-            ).first()
+            portfolio = db.query(Portfolio).filter(Portfolio.telegram_link_token == token).first()
 
             if portfolio is None:
                 await _send_message(
-                    client, chat_id,
+                    client,
+                    chat_id,
                     "❌ Geçersiz veya süresi dolmuş bağlantı kodu.\n"
-                    "Lütfen uygulamadan yeni bir bağlantı linki oluşturun."
+                    "Lütfen uygulamadan yeni bir bağlantı linki oluşturun.",
                 )
                 return
 
             portfolio.telegram_chat_id = str(chat_id)
-            portfolio.telegram_link_token = None   # tek kullanımlık — sil
+            portfolio.telegram_link_token = None  # tek kullanımlık — sil
             db.commit()
 
             await _send_message(
-                client, chat_id,
+                client,
+                chat_id,
                 f"✅ *{portfolio.name}* portföyü başarıyla bağlandı!\n\n"
-                "Bundan böyle bu portföy için sinyal bildirimleri buraya gelecek. 📊"
+                "Bundan böyle bu portföy için sinyal bildirimleri buraya gelecek. 📊",
             )
             logger.info("Telegram bağlandı: portfolio_id=%s chat_id=%s", portfolio.id, chat_id)
         finally:
@@ -99,15 +100,16 @@ async def _process_update(update: dict) -> None:
 
     # /start {token} formatı
     if text.startswith("/start "):
-        token = text[len("/start "):].strip()
+        token = text[len("/start ") :].strip()
         if token:
             await _handle_start(chat_id, token)
     elif text.strip() == "/start":
         async with httpx.AsyncClient() as client:
             await _send_message(
-                client, chat_id,
+                client,
+                chat_id,
                 "👋 Merhaba! Bu bot *RTSM* sinyal bildirimleri için kullanılır.\n\n"
-                "Portföyünüzü bağlamak için uygulamadaki *Telegram Bağla* butonuna tıklayın."
+                "Portföyünüzü bağlamak için uygulamadaki *Telegram Bağla* butonuna tıklayın.",
             )
 
 

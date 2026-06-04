@@ -38,13 +38,17 @@ def _neutral_result(ticker="AAPL") -> SignalResult:
 
 # ---------- 404 — portfolio bulunamadı ----------
 
+
 def test_signals_portfolio_not_found(client):
-    with patch("app.services.signal_service.compute_signal_score", return_value=_triggered_result()):
+    with patch(
+        "app.services.signal_service.compute_signal_score", return_value=_triggered_result()
+    ):
         resp = client.get("/portfolios/99999/signals?ticker=AAPL")
     assert resp.status_code == 404
 
 
 # ---------- 422 — ticker eksik ----------
+
 
 def test_signals_missing_ticker(client):
     portfolio = PortfolioFactory()
@@ -53,6 +57,7 @@ def test_signals_missing_ticker(client):
 
 
 # ---------- 503 — OHLCV verisi alınamadı ----------
+
 
 def test_signals_ohlcv_failure(client):
     portfolio = PortfolioFactory()
@@ -67,11 +72,14 @@ def test_signals_ohlcv_failure(client):
 
 # ---------- 200 — triggered=True, Gemini + Telegram mock ----------
 
+
 def test_signals_triggered_success(client):
     portfolio = PortfolioFactory()
     with (
         patch("app.services.signal_service.compute_signal_score", return_value=_triggered_result()),
-        patch("app.services.gemini_analysis_service.generate_analysis", return_value="Test analizi."),
+        patch(
+            "app.services.gemini_analysis_service.generate_analysis", return_value="Test analizi."
+        ),
         patch("app.services.telegram_service.send_signal_notification", return_value=True),
     ):
         resp = client.get(f"/portfolios/{portfolio.id}/signals?ticker=AAPL")
@@ -91,6 +99,7 @@ def test_signals_triggered_success(client):
 
 
 # ---------- 200 — triggered=False, Gemini ve Telegram çağrılmaz ----------
+
 
 def test_signals_not_triggered(client):
     portfolio = PortfolioFactory()
@@ -112,6 +121,7 @@ def test_signals_not_triggered(client):
 
 # ---------- 200 — Telegram token eksik, telegram_sent=False ama 200 döner ----------
 
+
 def test_signals_telegram_not_configured(client, monkeypatch):
     monkeypatch.setattr("app.services.telegram_service.settings.telegram_bot_token", None)
     portfolio = PortfolioFactory()
@@ -126,6 +136,7 @@ def test_signals_telegram_not_configured(client, monkeypatch):
 
 
 # ---------- trigger_reasons her zaman dolu ----------
+
 
 def test_signals_trigger_reasons_always_present(client):
     portfolio = PortfolioFactory()

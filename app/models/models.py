@@ -89,9 +89,7 @@ class Trade(Base):
 
 class SignalAnalysis(Base):
     __tablename__ = "signal_analyses"
-    __table_args__ = (
-        Index("ix_signal_analyses_portfolio_ticker", "portfolio_id", "ticker"),
-    )
+    __table_args__ = (Index("ix_signal_analyses_portfolio_ticker", "portfolio_id", "ticker"),)
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     portfolio_id: Mapped[int] = mapped_column(ForeignKey("portfolios.id"), nullable=False)
