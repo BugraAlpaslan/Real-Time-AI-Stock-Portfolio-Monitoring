@@ -1,17 +1,9 @@
 # Stock Portfolio Tracker
 
-MTH2526-B25 · Bulut Mimarilerinde Test Mühendisliği · Marmara Üniversitesi
 
 FastAPI tabanlı portföy ve işlem takibi: gerçek zamanlı P&L özeti, LocalStack S3 export, Prometheus metrikleri, Playwright E2E ve k6 performans testleri. Statik web arayüzü `/ui` altında Türkçe olarak servis edilir.
 
-## Grup Üyeleri
 
-| İsim | Öğrenci No |
-|------|-----------|
-| Mehmet İhsan Ekinci | 1704230054 |
-| Buğra Alpaslan | 170423022 |
-
-<!-- TODO: Demo video linki buraya -->
 
 ## Mimari Genel Bakış
 
